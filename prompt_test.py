@@ -1,11 +1,6 @@
-import os
-from openai import OpenAI
-from dotenv import load_dotenv
+import requests
 import pandas as pd
-
-# Load .env
-load_dotenv()
-client = OpenAI()
+import json
 
 # Example text
 text_to_summarize = """Artificial intelligence is transforming many industries by automating tasks,
@@ -23,17 +18,21 @@ prompts = [
 results = []
 
 for idx, prompt in enumerate(prompts, start=1):
-    response = client.chat.completions.create(
-        model="gpt-4o-preview",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    output = response.choices[0].message.content.strip()
-    print(f"\nPrompt {idx}:\n{prompt}\n")
-    print(f"Output {idx}:\n{output}\n{'='*50}")
-    results.append({"Prompt_Version": idx, "Prompt": prompt, "Output": output})
+    payload = {
+        "model": "llama3",
+        "prompt": prompt,
+        "stream": False
+    }
+    response = requests.post("http://localhost:11434/api/generate", json=payload)
+    
+    if response.status_code == 200:
+        data = response.json()
+        output = data.get("response", "").strip()
+        print(f"\nPrompt {idx}:\n{prompt}\n")
+        print(f"Output {idx}:\n{output}\n{'='*50}")
+        results.append({"Prompt_Version": idx, "Prompt": prompt, "Output": output})
+    else:
+        print(f"Error with prompt {idx}: {response.status_code} - {response.text}")
 
 # Save to CSV
 df = pd.DataFrame(results)
