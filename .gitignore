@@ -1,0 +1,28 @@
+# Ignore environment files
+.env
+
+# Ignore output CSVs and logs
+prompt_results.csv
+
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+*.so
+
+# Ignore virtual environment folders
+venv/
+ENV/
+env/
+.venv/
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore Mac system files
+.DS_Store
+
+# Ignore Windows system files
+Thumbs.db
+
+# Ignore Jupyter Notebook checkpoints (optional if you use notebooks later)
+.ipynb_checkpoints/
